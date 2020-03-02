@@ -45,4 +45,9 @@ public class InventoryService {
         inventoryRepository.delete(inventoryEntity);
     }
 
+    public List<InventoryDTO> getInventoriesByCategory(final String category) {
+        return inventoryRepository.findAllByCategoryAndExistIsTrue(category).stream().map(inventoryConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 }

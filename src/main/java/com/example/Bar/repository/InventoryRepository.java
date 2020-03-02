@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface InventoryRepository extends JpaRepository<InventoryEntity, Integer> {
 
     List<InventoryEntity> findAllByOrderByCategory();
+    List<InventoryEntity> findAllByCategoryAndExistIsTrue(String category);
 
     Optional<InventoryEntity> findByCategory(String category);
 }

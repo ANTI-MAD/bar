@@ -76,4 +76,18 @@ public class InventoryController {
             @PathVariable("inventoryId") final Integer inventoryId) throws BarNoSuchElementException {
         inventoryService.deleteInventory(inventoryId);
     }
+
+    @GetMapping("/{category}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "View inventories by category", notes = "Use this method, if you want to view inventories")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get inventories by category"),
+            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    public List<InventoryDTO> getInventoriesByCategory(@ApiParam(value = "Category", required = true)
+                                                       @PathVariable final String category){
+        return inventoryService.getInventoriesByCategory(category);
+    }
 }

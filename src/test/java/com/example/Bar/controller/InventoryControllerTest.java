@@ -261,4 +261,49 @@ class InventoryControllerTest extends AbstractControllerTest{
         return Arrays.asList(glass, table);
     }
 
+    private List<InventoryEntity> getInventoryEntitiesByCategory() {
+
+        final InventoryEntity wineglass1 = new InventoryEntity();
+        wineglass1.setId(3);
+        wineglass1.setName("Бокал 500 мл");
+        wineglass1.setCategory("wineglass");
+        wineglass1.setAmount(30);
+
+        final InventoryEntity wineglass2 = new InventoryEntity();
+        wineglass2.setId(4);
+        wineglass2.setName("Бокал 250 мл");
+        wineglass2.setCategory("wineglass");
+        wineglass2.setAmount(13);
+
+        return Arrays.asList(wineglass1, wineglass2);
+    }
+
+    @Test
+    public void testGetInventoryByCategoryIsOk() throws Exception{
+        //given
+        final String token = signIn(Roles.ADMIN);
+        final List<InventoryEntity> testInventoryEntities = getInventoryEntitiesByCategory();
+        given(inventoryRepository.findAllByCategoryAndExistIsTrue("wineglass")).willReturn(testInventoryEntities);
+
+        //when
+        mockMvc.perform(get("/inventories/wineglass").header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[\n" +
+                        "{\n" +
+                        "  \"id\" : 3,\n" +
+                        "  \"name\" : \"Бокал 500 мл\",\n" +
+                        "  \"category\" : \"wineglass\",\n" +
+                        "  \"count\" : 30\n" +
+                        "},\n" +
+                        "{\n" +
+                        "  \"id\" : 4,\n" +
+                        "  \"name\" : \"Бокал 250 мл\",\n" +
+                        "  \"category\" : \"wineglass\",\n" +
+                        "  \"count\" : 13\n" +
+                        "}\n" +
+                        "]"));
+
+        verify(inventoryRepository, times(1)).findAllByCategoryAndExistIsTrue("wineglass");
+    }
+
 }
